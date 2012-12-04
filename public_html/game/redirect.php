@@ -1,7 +1,7 @@
 <?php
 
-require_once (__DIR__ .'/../config/config.php');
-require_once(__DIR__ .'/../php-sdk/facebook.php');
+require_once (__DIR__ .'/../../config/config.php');
+require_once(__DIR__ .'/../../php-sdk/facebook.php');
 if($_GET['redirect']){
     $redirect_url = urldecode($_GET['redirect']);
 } else{
@@ -27,7 +27,7 @@ if ($facebook->getUser()) {
         exit;
     }
 } else{
-        header('Location: ' .SITE_URL .'/error.php');
+        header('Location: ' .SITE_URL);
         exit;
 }
 
@@ -39,6 +39,7 @@ try {
     $user = $stmt->fetch();
 } catch (PDOException $e) {
     echo $e->getMessage();
+    header('Location: ' .SITE_URL .'/error.php');
     exit;
 }
 
@@ -56,6 +57,7 @@ if (empty($user)) {
         $stmt->execute($params);
     } catch (PDOException $e) {
         echo $e->getMessage();
+        header('Location: ' .SITE_URL .'/error.php');
         exit;
     }
 }

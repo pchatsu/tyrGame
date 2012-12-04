@@ -27,7 +27,7 @@ if ($facebook->getUser()) {
         error_log($e->getMessage());
     }
 } else{
-    $redirect_url = SITE_URL .'/login.php?redirect=' .$url;
+    $redirect_url = SITE_URL .'/game/login.php?redirect=' .$url;
     header('Location: '.$redirect_url);
     exit;
 }

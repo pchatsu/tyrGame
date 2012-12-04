@@ -1,0 +1,232 @@
+function Square() {
+	this.lx; this.ly;
+};
+
+function Bicykill(x0, y0, v0) {
+	this.isKilled = false;
+
+	this.x = x0;   this.y = y0;  //position
+	this.v0 = v0;  this.v_max = 4*v0;
+	this.vx = 0;   this.vy = v0; //velosity
+	this.ax = 0;   this.ay = 0;  //acceleration
+	this.fx = 0;   this.fy = 0;  //force
+
+	this.l  = 40;  //blade's length
+	this.t  = 8;   //blade's width
+	this.bw = 12;  //bicycle's half width
+	this.bf = 8;  //bicycle's front length
+	this.bb = 20;  //bicycle's backword length
+
+	//sting mode's parameter
+	this.isStingMode = false;
+	this.StingCounter = 2.0;
+
+	//bladeless mode
+	this.isBladeless = false;
+	this.bladelessTime = 3.0;
+	this.bladelessCount = this.bladelessTime;
+
+	this.imgCounter = 0;
+	this.imgNum = 0;
+
+	this.bicLine = PS.cvs.height - this.t - 4*this.bb;
+
+}
+
+
+Bicykill.prototype.restart = function(x0, y0) {
+	this.x = x0;
+	this.y = y0;
+	this.isKilled = false;
+	this.isStingMode = false;
+	this.isBladeless = false;
+	this.bladelessCount = this.bladelessTime;
+	this.imgCounter = 0;
+	this.imgNum = 0;
+};
+
+
+Bicykill.prototype.collision_wall = function() {
+	if(this.isStingMode || this.isBladeless) {
+		if(this.x < this.bw ) {
+			this.x = this.bw;
+			this.vx = -this.vx;
+		}
+		else if (this.x > PS.cvs.width-this.bw) {
+			this.x = PS.cvs.width - this.bw;
+			this.vx = -this.vx;
+		}
+	}
+	else {
+		var coef_pen = 80;
+		if(this.x < this.l+this.bw ) {
+			this.fx = this.x - (this.l+this.bw);
+			this.fx *= coef_pen;
+			//this.x = this.l + this.bw;
+			//this.vx = -this.vx;
+		}
+		else if (this.x > PS.cvs.width-this.l-this.bw) {
+			this.fx = this.x - (PS.cvs.width-this.l-this.bw);
+			this.fx *= coef_pen;
+			//this.x = PS.cvs.width - this.l - this.bw;
+			//this.vx = -this.vx;
+		}
+	}
+};
+
+
+Bicykill.prototype.renewBlade = function() {
+	if(this.isBladeless) {
+		if(this.bladelessCount < 0) {
+			this.isBladeless = false;
+			this.isStingMode = false;
+			this.bladelessCount = this.bladelessTime;
+		}
+		else {
+			this.isStingMode = true;
+			this.vy = 3*this.v0;
+			this.bladelessCount -= PS.dt;
+		}
+	}
+}
+
+Bicykill.prototype.calcEOM = function(dt) {
+	this.collision_wall();
+	this.renewBlade();
+
+	this.vx += (this.ax - this.fx)*dt;
+	this.vy += (this.ay + this.fy)*dt;
+	if(this.isStingMode && !this.isBladeless) this.vy = this.v_max;
+
+	if(this.vy < this.v0) {
+		this.vy = this.v0;
+	}
+	else if(this.v_max <= this.vy) {
+		this.vy = this.v_max;
+	}
+
+	this.x += this.vx*dt;
+	this.y += this.vy*dt;
+
+	this.vx *= 0.88;
+	this.vy *= 0.92;
+
+	this.fx = 0;
+	this.fy = 0;
+};
+
+
+Bicykill.prototype.isInside_rect = function(x, y, x0, y0, x1, y1) {
+	if(x0<x && x<x1 && y0<y && y<y1) {
+		return true;
+	}
+	else {
+		return false;
+	}
+};
+
+
+Bicykill.prototype.blade_isCollided = function(x, y) {
+	if(this.isBladeless) {
+		return false;
+	}
+
+	if(this.isStingMode) {
+		var bladeS_x0 = this.x - this.bw;
+		var bladeS_y0 = this.y;
+		var bladeS_x1 = this.x + this.bw;
+		var bladeS_y1 = this.y + this.l;
+
+		if( this.isInside_rect(x, y, bladeS_x0, bladeS_y0, bladeS_x1, bladeS_y1) ){ 
+			return true;		
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		//left below point of bladeR
+		var bladeR_x0 = this.x + this.bw;
+		var bladeR_y0 = this.y - this.t;
+		//upper right point of bladeR
+		var bladeR_x1 = this.x + this.bw + this.l;
+		var bladeR_y1 = this.y;
+
+		//left below point of bladeR
+		var bladeL_x0 = this.x - this.bw - this.l;
+		var bladeL_y0 = bladeR_y0;
+		//upper right point of bladeR
+		var bladeL_x1 = this.x - this.bw;
+		var bladeL_y1 = bladeR_y1;
+
+		if( this.isInside_rect(x, y, bladeR_x0, bladeR_y0, bladeR_x1, bladeR_y1) || 
+				this.isInside_rect(x, y, bladeL_x0, bladeL_y0, bladeL_x1, bladeL_y1) ) {
+					return true;		
+				}
+		else {
+			return false;
+		}
+	}
+};
+
+
+Bicykill.prototype.bicycle_isCollided = function(x, y) {
+	var bic_x0 = this.x - this.bw;
+	var bic_y0 = this.y - this.t - this.bb;
+	var bic_x1 = this.x + this.bw;
+	var bic_y1 = this.y + this.bf;
+
+	if( this.isInside_rect(x, y, bic_x0, bic_y0, bic_x1, bic_y1) ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+};
+
+
+Bicykill.prototype.drawing = function(ctx) {
+
+	if(this.isKilled) {
+		ctx.fillStyle = "rgb(255,0,0)";
+	}
+	else {
+		ctx.fillStyle = "rgb(155,155,155)";
+	}
+
+	if(!this.isBladeless) {
+		if(this.isStingMode) {
+			var bladeS_x0 = this.x - this.bw;
+			var bladeS_y0 = this.bicLine;
+			ctx.drawImage(PS.img.bladeS, bladeS_x0, bladeS_y0, 2*this.bw, -this.l);
+
+		}
+		else {
+			var bladeR_x0 = this.x + this.bw;
+			var bladeR_y0 = this.bicLine + this.t;
+			ctx.drawImage(PS.img.bladeR, bladeR_x0, bladeR_y0-2.3*this.t, this.l, 5.0*this.t);
+
+			var bladeL_x0 = this.x - this.bw - this.l;
+			var bladeL_y0 = this.bicLine + this.t;
+			ctx.drawImage(PS.img.bladeL, bladeL_x0, bladeL_y0-2.3*this.t, this.l, 5.0*this.t);
+		}
+	}
+
+	var bic_x0 = this.x - this.bw;
+	var bic_y0 = this.bicLine + this.t + this.bb;
+	var countMax = 20*(this.v0/this.vy);
+	if(this.imgCounter >= countMax) {
+		this.imgCounter = 0;
+		if(this.imgNum == 0) {
+			this.imgNum = 1;
+		}
+		else {
+			this.imgNum = 0;
+		}
+	}
+	this.imgCounter++;
+
+	ctx.drawImage(PS.img.kitigai[this.imgNum], 
+			bic_x0, bic_y0, 2*this.bw, -(this.bf+this.t+this.bb));
+	//ctx.fillRect(bic_x0, bic_y0, 2*this.bw, -(this.bf+this.t+this.bb));
+};

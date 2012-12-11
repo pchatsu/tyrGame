@@ -15,7 +15,7 @@
 |
 */
 //$config['base_url']	= '';
-$config['base_url']	= 'http://tyr-tyr-tyr.com/game/scouter/';
+$config['base_url']	= 'http://ec2-23-20-17-66.compute-1.amazonaws.com/game/scouter/';
 //$config['base_url']	= '/';
 
 /*

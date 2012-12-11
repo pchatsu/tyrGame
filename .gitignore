@@ -1,1 +1,3 @@
 /config/*
+/public_html/game/scouter/application/config/config.php
+/public_html/game/scouter/application/views/header.php

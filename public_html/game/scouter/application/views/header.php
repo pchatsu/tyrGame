@@ -1,6 +1,7 @@
 <link href="<?=base_url()?>css/page.css" rel="stylesheet" type="text/css">
 <script src="<?=base_url()?>js/jquery-1.7.2.min.js" language="javascript"></script>
 <script src="<?=base_url()?>js/fbApi.js" language="javascript"></script>
+<script src="<?=base_url()?>js/config.js" language="javascript"></script>
 
 <link rel="shortcut icon" href="<?=base_url()?>img/">
 </head>

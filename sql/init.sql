@@ -1,5 +1,3 @@
-grant all on fb_login.* to root@localhost identified by 'condor';
-
 USE fb_login
 DROP TABLE IF EXISTS users;
 create table users (

@@ -20,7 +20,7 @@
 </h1>
 
 
-<div class="fb-login-button" id="button" redirect_uri="tyr-tyr-tyr.com/game/scouter" data-show-faces="true" data-width="200" style="display:none;" scope="user_likes,user_education_history,user_about_me,user_photos">Login with Facebook</div>
+<div class="fb-login-button" id="button" redirect_uri="<?=base_url()?>" data-show-faces="true" data-width="200" style="display:none;" scope="user_likes,user_education_history,user_about_me,user_photos">Login with Facebook</div>
 
 <div id="contents">
 

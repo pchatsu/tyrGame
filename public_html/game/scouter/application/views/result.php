@@ -161,6 +161,8 @@
 <!--div id="target5" class="target" onmouseover="visible(5);" onmouseout="unVisible(5);"></div-->
 </div>
 
+<button id="share">share</button>
+
 <script>
 var rotatetimer;
 
@@ -289,13 +291,4 @@ setTimeout(function(){
 },2000);
 });
 </script>
-
-
-
-
-
-
-
-
-
 

@@ -1,7 +1,7 @@
 window.fbAsyncInit = function(){
 	FB.init({
                     appId: APP_ID,
-		    		status: true,
+					status: true,
                     cookie: true,
                     xfbml: true,
 //	},
@@ -20,19 +20,19 @@ window.fbAsyncInit = function(){
 		myInit();
 	}});
 	
-	//ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®çŠ¶æ³ã‚’èª¿ã¹ã‚‹ã€‚
+	//ƒ†[ƒU[‚Ìó‹µ‚ğ’²‚×‚éB
 	FB.getLoginStatus(function(response) {
 		if (response.status === 'connected') {
-			//ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹ã€‚
+			//ƒƒOƒCƒ“‚µ‚Ä‚¢‚éB
 			console.log("connected");
 			myInit();
 			document.getElementById("contents").style.display = "block";
 		} else if (response.status === 'not_authorized') {
-			//ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹ã‘ã‚Œã©ã‚¢ãƒ—ãƒªã«æ¥ç¶šã—ã¦ã„ãªã„
+			//ƒƒOƒCƒ“‚µ‚Ä‚¢‚é‚¯‚ê‚ÇƒAƒvƒŠ‚ÉÚ‘±‚µ‚Ä‚¢‚È‚¢
 			console.log("not authorized");
 			document.getElementById("button").style.display = "block";
 		} else {
-			//ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ãªã„
+			//ƒƒOƒCƒ“‚µ‚Ä‚¢‚È‚¢
 			console.log(" not log in");
 			login();
 		}
@@ -41,13 +41,13 @@ window.fbAsyncInit = function(){
 	function login(){       
 		FB.login(function(response){
 			if(response.authResponse){
-				//ãƒ­ã‚°ã‚¤ãƒ³ã—ãŸæ™‚ã®å‡¦ç†
+				//ƒƒOƒCƒ“‚µ‚½‚Ìˆ—
 				console.log("logged in");
 			}else{
-				//ãƒ­ã‚°ã‚¤ãƒ³ã—ãªã‹ã£ãŸæ™‚ã®å‡¦ç†
+				//ƒƒOƒCƒ“‚µ‚È‚©‚Á‚½‚Ìˆ—
 				console.log("not log in...");
 			}
-		},{scope:'user_about_me'});//permissionã®è¨­å®š
+		},{scope:'user_about_me'});//permission‚Ìİ’è
 	}
 };
 
@@ -57,7 +57,7 @@ function myInit(){
 	}else{
 		return;
 	}
-	FB.api('/me?fields=picture,name,bio,likes,link', function(response){
+	FB.api('/me?fields=picture,name,bio,likes,link,album', function(response){
 		//alert("Welcome, " + response);
 		me = response;
 		gender = me.gender;
@@ -70,6 +70,15 @@ function myInit(){
 		document.getElementById("bio").innerHTML = me.bio;
 		for(var i = 0;i < 6;i++){
 			getPic(me.likes.data[i].id,'like' + String(i+1));
+		}
+	});
+	FB.api('me/albums',function(response){
+		albums = response;
+		for(var i = 0;i < albums.data.length;i++){
+				if(albums.data[i].type == 'wall'){
+				wall_album_id = albums.data[i].id;
+				break;
+			}
 		}
 	});
 	FB.api('me/friends',function(response){
@@ -161,3 +170,5 @@ var female = 0;
 var unisex = 0;
 var finishCulcRia = false;
 var doneInit = false;
+var albums;
+var wall_album_id;

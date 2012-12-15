@@ -246,7 +246,7 @@ if ( ! function_exists('word_censor'))
 		$str = ' '.$str.' ';
 
 		// \w, \b and a few others do not match on a unicode character
-		// set for performance reasons. As a result words like 端ber
+		// set for performance reasons. As a result words like über
 		// will not match on a word boundary. Instead, we'll assume that
 		// a bad word will be bookeneded by any of these characters.
 		$delim = '[-_\'\"`(){}<>\[\]|!?@#%&,.:;^~*+=\/ 0-9\n\r\t]';

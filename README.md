@@ -1,4 +1,4 @@
 tyrGame
 =======
 
-tyrgameはバンドtyrが運営するゲームです。
+work in progress

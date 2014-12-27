@@ -1,7 +1,3 @@
-<?
-#facebookログイン
-require_once(__DIR__ .'/../../../util/fb-check.php');
-?>
 <html lang="ja">
 	<head>
 		<title>りずむぬなり</title>

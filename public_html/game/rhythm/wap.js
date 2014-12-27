@@ -62,7 +62,7 @@ function wap_playSound(bufNum) {
 	source.buffer = bufferLoader.bufferList[bufNum];
 	source.loop = false;
 	source.connect(wap.destination);
-	source.noteOn(wap.currentTime);
+	source.start(wap.currentTime);
 }
 
 
@@ -73,7 +73,7 @@ function wap_playSoundWithTime(bufNum,late) {
 	source.buffer = bufferLoader.bufferList[bufNum];
 	source.loop = false;
 	source.connect(wap.destination);
-	source.noteOn(wap.currentTime + late);
+	source.start(wap.currentTime + late);
 
 }
 
